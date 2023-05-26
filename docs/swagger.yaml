@@ -1,0 +1,330 @@
+definitions:
+  controllers.BlogInput:
+    properties:
+      category_id:
+        type: integer
+      text:
+        type: string
+      title:
+        type: string
+    type: object
+  controllers.CategoryInput:
+    properties:
+      cat_type:
+        type: string
+    type: object
+  controllers.LoginInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  controllers.RegisterInput:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  models.Blog:
+    properties:
+      categoryid:
+        type: integer
+      created_at:
+        description: "Image       string \t`json:\"image\"`"
+        type: string
+      id:
+        type: integer
+      text:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.Category:
+    properties:
+      cat_type:
+        type: string
+      id:
+        type: integer
+    type: object
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+paths:
+  /blogs:
+    get:
+      description: Get List of blog
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Blog'
+            type: array
+      summary: Get All blog
+      tags:
+      - blog
+    post:
+      description: Create new blog
+      parameters:
+      - description: the body to create a new blog
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.BlogInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Blog'
+      summary: Create blog
+      tags:
+      - blog
+  /blogs/{id}:
+    delete:
+      description: Delete One blog by Id
+      parameters:
+      - description: blog Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+      summary: Delete blog
+      tags:
+      - blog
+    get:
+      description: Get One blog by Id
+      parameters:
+      - description: blog id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Blog'
+      summary: Get blog
+      tags:
+      - blog
+    patch:
+      description: Update blog by Id
+      parameters:
+      - description: blog Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: the body to update new blog
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.BlogInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Blog'
+      summary: Update blog
+      tags:
+      - blog
+  /categories:
+    get:
+      description: Get List of Category
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Category'
+            type: array
+      summary: Get All List of Category
+      tags:
+      - Category
+    post:
+      description: Create new Category
+      parameters:
+      - description: kategori berhasil dibuat
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CategoryInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Category'
+      summary: Create Category
+      tags:
+      - Category
+  /categories/{id}:
+    delete:
+      description: Delete One Category by Id
+      parameters:
+      - description: Category Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+      summary: Delete Category by Id
+      tags:
+      - Category
+    get:
+      description: Get One Category by Id
+      parameters:
+      - description: Category Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Category'
+      summary: Get Category by Id
+      tags:
+      - Category
+    patch:
+      description: Update One Category by Id
+      parameters:
+      - description: Category Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: the body to update new category
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CategoryInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Category'
+      summary: Update Category by Id
+      tags:
+      - Category
+  /categories/{id}/blog:
+    get:
+      description: Get  all blog from category by id
+      parameters:
+      - description: Category Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Blog'
+            type: array
+      summary: Get blog by category by id
+      tags:
+      - Category
+  /login:
+    post:
+      description: this func used to login to sistem by user by get jwt token and
+        by authorization
+      parameters:
+      - description: the body to login
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.LoginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Login as a User
+      tags:
+      - Auth
+  /register:
+    post:
+      description: Register new user
+      parameters:
+      - description: the body to Register
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.RegisterInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Register as a new User
+      tags:
+      - Auth
+swagger: "2.0"
