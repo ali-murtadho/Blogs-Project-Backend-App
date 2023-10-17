@@ -10,9 +10,9 @@ import (
 )
 
 type BlogInput struct {
-	Title 	   string `json:"title"`
-	Text 	   string `json:"text"`
-	CategoryID uint	  `json:"category_id"`
+	Title      string `json:"title"`
+	Text       string `json:"text"`
+	CategoryID uint   `json:"category_id"`
 }
 
 // GetAllBlog godoc
@@ -22,13 +22,13 @@ type BlogInput struct {
 // @Produce json
 // @Success 200 {object} []models.Blog
 // @Router /blogs [get]
-func GetAllBlog(c *gin.Context){
+func GetAllBlog(c *gin.Context) {
 	// Mengambil db dari konteks gin
 	db := c.MustGet("db").(*gorm.DB)
 	var blog []models.Blog
 	db.Find(&blog)
 
-	c.JSON(http.StatusOK, gin.H{"data" : blog})
+	c.JSON(http.StatusOK, gin.H{"data": blog})
 }
 
 // Create a blog godoc
@@ -39,47 +39,45 @@ func GetAllBlog(c *gin.Context){
 // @Produce json
 // @Success 200 {object} models.Blog
 // @Router /blogs [post]
-func CreateBlog(c *gin.Context){
-	// Mengambil db dari konteks gin
-	db := c.MustGet("db").(*gorm.DB)
+func CreateBlog(c *gin.Context) {
 	var input BlogInput
-	var category models.Category
+	// var category models.Category
 
-	if err := c.ShouldBindJSON(&input);
-	err != nil{
-		c.JSON(http.StatusBadRequest, gin.H{"error" : err.Error()})
-	}
-	if err := db.Where("id = ?", input.CategoryID).First(&category).Error;
-	err != nil{
-		c.JSON(http.StatusBadRequest, gin.H{"error": "categoryid tidak ditemukan"})
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	blog := models.Blog{Title: input.Title, Text: input.Text}
-	db.Create(&blog)
+	// if err := db.Where("id = ?", input.CategoryID).First(&category).Error; err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "categoryid tidak ditemukan"})
+	// 	return
+	// }
 
-	c.JSON(http.StatusOK, gin.H{"data" : blog})
+	blog := models.Blog{Title: input.Title, Text: input.Text, CategoryID: input.CategoryID}
+	// Mengambil db dari konteks gin
+	db := c.MustGet("db").(*gorm.DB)
+	db.Create(&blog)
+	c.JSON(http.StatusOK, gin.H{"data": blog})
 }
 
 // Get blog by Id godoc
-// @summary Get blog 
+// @summary Get blog
 // @Description Get One blog by Id
 // @Tags blog
 // @Produce json
 // @param id path string true "blog id"
 // @Success 200 {object} models.Blog
 // @Router /blogs/{id} [get]
-func GetBlogById(c *gin.Context){
+func GetBlogById(c *gin.Context) {
 	var blog models.Blog
 	// Mengambil db dari konteks gin
 	db := c.MustGet("db").(*gorm.DB)
-	if err := db.Where("id = ?", c.Param("id")).First(&blog).Error;
-	err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error" : "Tidak ditemukan data"})
+	if err := db.Where("id = ?", c.Param("id")).First(&blog).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Tidak ditemukan data"})
 		return
 	}
-	
-	c.JSON(http.StatusOK, gin.H{"data" : blog})
+
+	c.JSON(http.StatusOK, gin.H{"data": blog})
 }
 
 // Update blog
@@ -91,31 +89,22 @@ func GetBlogById(c *gin.Context){
 // @Produce json
 // @Success 200 {object} models.Blog
 // @Router /blogs/{id} [patch]
-func UpdateBlog(c *gin.Context){
+func UpdateBlog(c *gin.Context) {
 	// Mengambil db dari konteks gin
 	db := c.MustGet("db").(*gorm.DB)
 
 	// cek kategori jika ada
 	var blog models.Blog
-	var category models.Category
-
-	if err := db.Where("id = ?", c.Param("id")).First(&blog).Error;
-	err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error" : "Tidak ditemukan data"})
+	if err := db.Where("id = ?", c.Param("id")).First(&blog).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Tidak ditemukan data"})
 		return
 	}
 
 	var input BlogInput
-	if err := c.ShouldBindJSON(&input);
-	err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error" : err.Error()})
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
-	if err := db.Where("id=?", input.CategoryID).First(&category).Error 
-	err != nil{
-		c.JSON(http.StatusBadRequest, gin.H{"error" : "categoryid tidak ditemukan"})
-	}
-	
 	var updateblog models.Blog
 	updateblog.Title = input.Title
 	updateblog.Text = input.Text
@@ -124,29 +113,28 @@ func UpdateBlog(c *gin.Context){
 
 	// Proses memasukkan ke database
 	db.Model(&blog).Updates(updateblog)
-	c.JSON(http.StatusOK, gin.H{"data" : blog})
+	c.JSON(http.StatusOK, gin.H{"data": blog})
 }
 
 // Delete blog godoc
-// @summary Delete blog 
+// @summary Delete blog
 // @Description Delete One blog by Id
 // @Tags blog
 // @param id path string true "blog Id"
 // @Produce json
 // @Success 200 {object} map[string]boolean
 // @Router /blogs/{id} [delete]
-func DeleteBlog(c *gin.Context){
+func DeleteBlog(c *gin.Context) {
 	var blog models.Blog
 	// Mengambil db dari konteks gin
 	db := c.MustGet("db").(*gorm.DB)
 
-	if err := db.Where("id = ?", c.Param("id")).First(&blog).Error;
-	err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error" : "Tidak ditemukan data"})
+	if err := db.Where("id = ?", c.Param("id")).First(&blog).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Tidak ditemukan data"})
 		return
 	}
-	
+
 	db.Delete(&blog)
 
-	c.JSON(http.StatusOK, gin.H{"data" : true})
+	c.JSON(http.StatusOK, gin.H{"data": true})
 }

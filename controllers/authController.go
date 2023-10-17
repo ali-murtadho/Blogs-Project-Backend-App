@@ -28,13 +28,12 @@ type RegisterInput struct {
 // @Produce json
 // @Success 200 {object} map[string]interface{}
 // @Router /login [post]
-func Login(c *gin.Context){
+func Login(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 	var input LoginInput
 
-	if err := c.ShouldBindJSON(&input);
-	err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error" : err.Error()})
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -46,15 +45,15 @@ func Login(c *gin.Context){
 	token, err := models.LoginCheck(usr.Username, usr.Password, db)
 	if err != nil {
 		fmt.Println(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error" : "Username atau password salah"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Username atau password salah"})
 		return
 	}
 	user := map[string]string{
-		"username" : usr.Username,
-		"email" : usr.Email,
+		"username": usr.Username,
+		//"email" : usr.Email,
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message" : "Login berhasil", "user" : user, "token" : token})
+	c.JSON(http.StatusOK, gin.H{"message": "Login berhasil", "user": user, "token": token})
 }
 
 // Register User godoc
@@ -65,13 +64,12 @@ func Login(c *gin.Context){
 // @Produce json
 // @Success 200 {object} map[string]interface{}
 // @Router /register [post]
-func Register(c *gin.Context){
+func Register(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 	var input RegisterInput
 
-	if err := c.ShouldBindJSON(&input);
-	err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error" : err.Error()})
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -84,13 +82,13 @@ func Register(c *gin.Context){
 	_, err := usr.SaveUser(db)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error" :  err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	user := map[string]string{
-		"username" : usr.Username,
-		"email" : usr.Email,
+		"username": usr.Username,
+		"email":    usr.Email,
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message" : "Registrasi berhasil", "user" : user})
+	c.JSON(http.StatusOK, gin.H{"message": "Registrasi berhasil", "user": user})
 }

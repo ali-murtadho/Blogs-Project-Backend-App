@@ -476,7 +476,7 @@ const docTemplate = `{
         "models.Blog": {
             "type": "object",
             "properties": {
-                "categoryid": {
+                "category_id": {
                     "type": "integer"
                 },
                 "created_at": {
